@@ -4,7 +4,8 @@ import { connect } from "react-redux";
 import { getFavorites } from "../../actions/index";
 import { TextInput, FlatList } from "react-native-gesture-handler";
 import { removeFavorites } from "../../actions/index";
-
+import { openDatabase } from "react-native-sqlite-storage";
+let db = openDatabase({ name: "newdb", createFromLocation: "~quotes.db" });
 
 class Favorites extends Component {
   render() {
@@ -33,7 +34,18 @@ function mapDispatchToProps(dispatch, state) {
   return {
     removeFavorites: function(id) {
       dispatch(removeFavorites(id));
+      db.transaction(tx => {
+        tx.executeSql(
+          "DELETE FROM favorites where id = ?",
+          [id],
+          (tx, rs) => {},
+          (tx, err) => {}
+        );
+      });
     }
   };
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Favorites);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Favorites);
