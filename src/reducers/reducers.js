@@ -13,9 +13,7 @@ const reducers = (state = initialState, action) => {
       };
     case "REMOVE_FAVORITES":
       state.favorites.splice(action.id, 1);
-      return [...state];
-    case "GET_FAVORITES":
-      return state.favorites;
+      return {...state, favorites: [...state.favorites]};
     case "GET_QUOTE":
       newquote = {
         id: action.id,

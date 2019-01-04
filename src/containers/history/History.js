@@ -7,18 +7,11 @@ import { TextInput } from "react-native-gesture-handler";
 class History extends Component {
 
   render() {
-    const textInputComponents = this.props.favorites.map((quote)=> <Text key={quote.id}>{quote.quote} </Text>)
-    console.log(this.props.favorites)
     return (
         <View>
-            {textInputComponents}
         </View>
     )
   }
 }
-const mapStateToProps = state => {
-  return {
-    favorites: state.favorites
-  };
-};
-export default connect(mapStateToProps)(History);
+
+export default History;

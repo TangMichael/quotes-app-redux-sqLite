@@ -11,16 +11,20 @@ import { connect } from "react-redux";
 import { addFavorites } from "../../actions/index";
 import { openDatabase } from "react-native-sqlite-storage";
 import { ScrollView, FlatList } from "react-native-gesture-handler";
-let db = openDatabase({ name: "db", createFromLocation: "~quotes.db" });
+let db = openDatabase({ name: "newdb", createFromLocation: "~quotes.db" });
 
 class DailyQuote extends Component {
   textInputComponents;
   constructor(props) {
     super(props);
-    this.state = { quotes: [], id: 0 };
+    this.state = { quotes: [], id: 0, initial: true };
   }
   componentDidMount() {
     db.transaction(tx => {
+      // used to delete favorites db if error occurs while handling the db
+      // tx.executeSql("DELETE FROM favorites", [], (tx, results)=>{
+      //   console.log("deleted favs");
+      // })
       // somehow needs an argument, without it, it doesnt work
       // but the argument should be optional
       tx.executeSql("SELECT * FROM quotes where id < 11", [], (tx, results) => {
@@ -28,9 +32,26 @@ class DailyQuote extends Component {
         var arr = [];
         if (len > 0) {
           for (var i = 0; i < 10; i++) {
-            arr.push(results.rows.item(i).quote);
+            arr.push({
+              id: results.rows.item(i).id,
+              quote: results.rows.item(i).quote
+            });
           }
           this.setState({ quotes: arr, id: 10 });
+        }
+      });
+      // fill the app state with favorites quotes
+      tx.executeSql("SELECT * FROM favorites", [], (tx, results) => {
+        console.log("ok")
+        this.setState({initial:true})
+        var len = results.rows.length;
+        if (len > 0) {
+          for (var i = 0; i < len; i++) {
+            this.props.addFavorites({
+              id: results.rows.item(i).id,
+              quote: results.rows.item(i).quote
+            }, true);
+          }
         }
       });
     });
@@ -38,23 +59,29 @@ class DailyQuote extends Component {
 
   addQuotes() {
     db.transaction(tx => {
-      // somehow needs an argument, without it, it doesnt work
-      // but the argument should be optional
       tx.executeSql(
-        "SELECT * FROM quotes where id <" + (this.state.id + 11) + " AND id >"+ this.state.id,
+        "SELECT * FROM quotes where id <" +
+          (this.state.id + 11) +
+          " AND id >" +
+          this.state.id,
         [],
         (tx, results) => {
           var len = results.rows.length;
           var arr = [];
           if (len > 0) {
+            // add 10 new quotes to the array
             for (var i = 0; i < 10; i++) {
-              arr.push(results.rows.item(i).quote);
+              arr.push({
+                id: results.rows.item(i).id,
+                quote: results.rows.item(i).quote
+              });
             }
+            // set local state for quick view/rerender
             this.setState({
               quotes: this.state.quotes.concat(arr),
               id: this.state.id + 10
             });
-          console.log(this.state.quotes);
+            console.log(this.state.quotes);
           }
         }
       );
@@ -66,9 +93,14 @@ class DailyQuote extends Component {
       <FlatList
         data={this.state.quotes}
         renderItem={({ item }) => (
-          <Text style={{ borderBottomWidth: 1 }}>{item}</Text>
+          <Text
+            onPress={() => this.props.addFavorites(item)}
+            style={{ borderBottomWidth: 1 }}
+          >
+            {item.quote}
+          </Text>
         )}
-        onEndReachedThreshold={0.01}
+        onEndReachedThreshold={0.01} // need this so it keeps redoing onEndReached as we scroll
         onEndReached={() => {
           this.addQuotes(() => console.log(this.state.id));
         }}
@@ -79,8 +111,25 @@ class DailyQuote extends Component {
 
 function mapDispatchToProps(dispatch, state) {
   return {
-    addFavorites: function(quote) {
-      dispatch(addFavorites(quote));
+    addFavorites: function(quote, initial) {
+      dispatch(addFavorites(quote.quote));
+      // on opening, will triger the err since it is already in the database
+      // we pass in initial which is true
+      // next time we add, we dont pass anything, !undefined will be true
+      if(!initial){
+      db.transaction(tx => {
+        tx.executeSql(
+          "INSERT into favorites values(?,?)",
+          [quote.id, quote.quote],
+          (tx, rs) => {},
+          (tx, err) => {
+            if (tx.code == 0) {
+              console.log("Quote already added to favorites");
+            }
+          }
+        );
+      });
+    }
     },
     getQuotes: function(quote) {
       dispatch(getQuotes(quote));

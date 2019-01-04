@@ -6,8 +6,7 @@ export const addFavorites = quote => ({
   quote
 })
 
-export const getFavorites = quote => ({
-    type: 'GET_FAVORITES',
-    quote
+export const removeFavorites = id => ({
+  type: 'REMOVE_FAVORITES',
+  id: id
 })
-
