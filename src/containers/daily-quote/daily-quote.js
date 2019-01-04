@@ -3,28 +3,27 @@ import { Platform, StyleSheet, View, Text, Button } from "react-native";
 import { connect } from "react-redux";
 import { addFavorites } from "../../actions/index";
 import { openDatabase } from "react-native-sqlite-storage";
-var db = openDatabase({ name: "quote.db"});
+let db = openDatabase({ name: "db", createFromLocation: '~quotes.db'});
 
 class DailyQuote extends Component {
   constructor(props) {
     super(props);
-    this.state = { quotes: null };
+    this.state = { quotes: [] };
   }
 
   componentDidMount() {
     db.transaction(tx => {
       // somehow needs an argument, without it, it doesnt work
       // but the argument should be optional
-      tx.executeSql("SELECT * FROM quote", [], (tx, results) => {
+      tx.executeSql("SELECT * FROM quotes",[], (tx, results) => {
         var len = results.rows.length;
+        var arr = []
         if (len > 0) {
-          console.log("quotes to be displayed")
-          var row = results.rows.item(0);
-          console.log(row.quote);
-          this.setState({quotes: row.quote})
-          quote = row.quote;
-          var row = results.rows.item(1);
-          console.log(row.quote);
+          for(var i = 0; i<10; i++){
+            arr.push(results.rows.item(i).quote);
+          }
+          this.setState({quotes: arr})
+          console.log(arr)
         }
       });
     });
