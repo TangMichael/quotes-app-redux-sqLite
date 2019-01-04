@@ -12,7 +12,7 @@ const reducers = (state = initialState, action) => {
         favorites: [...state.favorites, newquote]
       };
     case "REMOVE_FAVORITES":
-      state.favorites.splice(action.id, 1);
+      state.favorites = state.favorites.filter(element => action.id != element.id)
       return {...state, favorites: [...state.favorites]};
     case "GET_QUOTE":
       newquote = {

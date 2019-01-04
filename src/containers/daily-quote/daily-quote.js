@@ -112,7 +112,8 @@ class DailyQuote extends Component {
 function mapDispatchToProps(dispatch, state) {
   return {
     addFavorites: function(quote, initial) {
-      dispatch(addFavorites(quote.quote));
+      console.log(quote)
+      dispatch(addFavorites(quote));
       // on opening, will triger the err since it is already in the database
       // we pass in initial which is true
       // next time we add, we dont pass anything, !undefined will be true
@@ -130,9 +131,6 @@ function mapDispatchToProps(dispatch, state) {
         );
       });
     }
-    },
-    getQuotes: function(quote) {
-      dispatch(getQuotes(quote));
     }
   };
 }
