@@ -12,6 +12,7 @@ class Favorites extends Component {
     return (
       <FlatList
         data={this.props.state}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <Text
             onPress={() => this.props.removeFavorites(item.id)}

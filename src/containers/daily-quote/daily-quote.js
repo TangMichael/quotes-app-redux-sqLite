@@ -96,8 +96,9 @@ class DailyQuote extends Component {
     return (
       <FlatList
         data={this.state.quotes}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
-          <Text
+          <Text 
             onPress={() =>{
               var x = false;
               this.props.favorites.some(element => {
@@ -115,7 +116,7 @@ class DailyQuote extends Component {
               }
             }
           }
-            style={{ borderBottomWidth: 1 }}
+            style={{ borderBottomWidth: 1, padding: 4 }}
           >
             {item.quote}
           </Text>
