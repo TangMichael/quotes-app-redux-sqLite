@@ -12,6 +12,7 @@ import { addFavorites } from "../../actions/index";
 import { openDatabase } from "react-native-sqlite-storage";
 import { ScrollView, FlatList } from "react-native-gesture-handler";
 let db = openDatabase({ name: "newdb", createFromLocation: "~quotes.db" });
+import Snackbar from "react-native-snackbar";
 
 class DailyQuote extends Component {
   textInputComponents;
@@ -42,15 +43,18 @@ class DailyQuote extends Component {
       });
       // fill the app state with favorites quotes
       tx.executeSql("SELECT * FROM favorites", [], (tx, results) => {
-        console.log("ok")
-        this.setState({initial:true})
+        console.log("ok");
+        this.setState({ initial: true });
         var len = results.rows.length;
         if (len > 0) {
           for (var i = 0; i < len; i++) {
-            this.props.addFavorites({
-              id: results.rows.item(i).id,
-              quote: results.rows.item(i).quote
-            }, true);
+            this.props.addFavorites(
+              {
+                id: results.rows.item(i).id,
+                quote: results.rows.item(i).quote
+              },
+              true
+            );
           }
         }
       });
@@ -112,29 +116,39 @@ class DailyQuote extends Component {
 function mapDispatchToProps(dispatch, state) {
   return {
     addFavorites: function(quote, initial) {
-      console.log(quote)
-      dispatch(addFavorites(quote));
-      // on opening, will triger the err since it is already in the database
-      // we pass in initial which is true
-      // next time we add, we dont pass anything, !undefined will be true
-      if(!initial){
-      db.transaction(tx => {
-        tx.executeSql(
-          "INSERT into favorites values(?,?)",
-          [quote.id, quote.quote],
-          (tx, rs) => {},
-          (tx, err) => {
-            if (tx.code == 0) {
-              console.log("Quote already added to favorites");
-            }
-          }
-        );
-      });
-    }
+        dispatch(addFavorites(quote));
+        // on opening, will triger the err since it is already in the database
+        // we pass in initial which is true
+        // next time we add, we dont pass anything, !undefined will be true
+        if (!initial) {
+          db.transaction(tx => {
+            tx.executeSql(
+              "INSERT into favorites values(?,?)",
+              [quote.id, quote.quote],
+              (tx, results) => {
+                console.log("OK");
+              },
+              (tx, err) => {
+                if (tx.code == 0) {
+                  Snackbar.show({
+                    title: "Quote already added to favorites",
+                    duration: Snackbar.LENGTH_SHORT
+                  });
+                }
+              }
+            );
+          });
+        }
     }
   };
 }
+
+const mapStateToProps = state => {
+  return {
+    favorites: state.favorites
+  };
+};
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(DailyQuote);
