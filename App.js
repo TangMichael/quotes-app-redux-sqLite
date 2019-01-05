@@ -9,15 +9,26 @@ import { Provider } from 'react-redux'
 
 export const TabNavigator = createBottomTabNavigator({
   Quote: {
-    screen: DailyQuote
+    screen: DailyQuote,
+    // navigationOptions: () => ({
+    //   title: 'LOL',
+    //   activeColor: '#f0edf6',
+    //   headerStyle: {backgroundColor: 'red'},
+    //   headerBackTitle: null
+    // }),
   },
   History: {
-    screen: History
+    screen: History,
   },
   Favorites: {
     screen: Favorites
   }
-});
+},{
+  activeColor: '#f0edf6',
+  inactiveColor: '#3e2465',
+  barStyle: { backgroundColor: '#694fad' },
+}
+);
 
 const App = createAppContainer(TabNavigator);
 const store = createStore(reducers);
