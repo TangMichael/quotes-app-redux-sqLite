@@ -98,7 +98,23 @@ class DailyQuote extends Component {
         data={this.state.quotes}
         renderItem={({ item }) => (
           <Text
-            onPress={() => this.props.addFavorites(item)}
+            onPress={() =>{
+              var x = false;
+              this.props.favorites.some(element => {
+                if (element.id === item.id) {
+                  x = true;
+                }
+              });
+              if(!x){
+                this.props.addFavorites(item)
+              } else{
+                Snackbar.show({
+                  title: "Quote already added to favorites",
+                  duration: Snackbar.LENGTH_SHORT
+                });
+              }
+            }
+          }
             style={{ borderBottomWidth: 1 }}
           >
             {item.quote}
@@ -116,29 +132,29 @@ class DailyQuote extends Component {
 function mapDispatchToProps(dispatch, state) {
   return {
     addFavorites: function(quote, initial) {
-        dispatch(addFavorites(quote));
-        // on opening, will triger the err since it is already in the database
-        // we pass in initial which is true
-        // next time we add, we dont pass anything, !undefined will be true
-        if (!initial) {
-          db.transaction(tx => {
-            tx.executeSql(
-              "INSERT into favorites values(?,?)",
-              [quote.id, quote.quote],
-              (tx, results) => {
-                console.log("OK");
-              },
-              (tx, err) => {
-                if (tx.code == 0) {
-                  Snackbar.show({
-                    title: "Quote already added to favorites",
-                    duration: Snackbar.LENGTH_SHORT
-                  });
-                }
+      dispatch(addFavorites(quote));
+      // on opening, will triger the err since it is already in the database
+      // we pass in initial which is true
+      // next time we add, we dont pass anything, !undefined will be true
+      if (!initial) {
+        db.transaction(tx => {
+          tx.executeSql(
+            "INSERT into favorites values(?,?)",
+            [quote.id, quote.quote],
+            (tx, results) => {
+              console.log("OK");
+            },
+            (tx, err) => {
+              if (tx.code == 0) {
+                Snackbar.show({
+                  title: "Quote already added to favorites",
+                  duration: Snackbar.LENGTH_SHORT
+                });
               }
-            );
-          });
-        }
+            }
+          );
+        });
+      }
     }
   };
 }
