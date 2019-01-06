@@ -116,7 +116,7 @@ class DisplayQuotes extends Component {
               }
             }
           }
-            style={{ borderBottomWidth: 1, padding: 4 }}
+            style={{ borderBottomWidth: 1, padding: 15 }}
           >
             {item.quote}
           </Text>

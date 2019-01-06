@@ -16,7 +16,7 @@ class Favorites extends Component {
         renderItem={({ item }) => (
           <Text
             onPress={() => this.props.removeFavorites(item.id)}
-            style={{ borderBottomWidth: 1 }}
+            style={{ borderBottomWidth: 1, padding: 15 }}
           >
             {item.quote}
           </Text>
