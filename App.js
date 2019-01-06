@@ -2,14 +2,14 @@ import React, { Component } from "react";
 import { createStore } from "redux";
 import Favorites from "./src/containers/favorites/favorites";
 import { createBottomTabNavigator, createAppContainer } from "react-navigation";
-import History from "./src/containers/history/History";
-import DailyQuote from "./src/containers/daily-quote/daily-quote";
+import DisplayDaily from "./src/containers/display-daily/display-daily";
+import DisplayQuotes from "./src/containers/display-quotes/display-quotes";
 import reducers from "./src/reducers/reducers"
 import { Provider } from 'react-redux'
 
 export const TabNavigator = createBottomTabNavigator({
   Quote: {
-    screen: DailyQuote,
+    screen: DisplayQuotes,
     // navigationOptions: () => ({
     //   title: 'LOL',
     //   activeColor: '#f0edf6',
@@ -17,8 +17,8 @@ export const TabNavigator = createBottomTabNavigator({
     //   headerBackTitle: null
     // }),
   },
-  History: {
-    screen: History,
+  Daily: {
+    screen: DisplayDaily,
   },
   Favorites: {
     screen: Favorites

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { getFavorites } from "../../actions/index";
 import { TextInput } from "react-native-gesture-handler";
 
-class History extends Component {
+class DisplayDaily extends Component {
 
   render() {
     return (
@@ -14,4 +14,4 @@ class History extends Component {
   }
 }
 
-export default History;
+export default DisplayDaily;

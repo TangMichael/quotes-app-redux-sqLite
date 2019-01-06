@@ -14,7 +14,7 @@ import { ScrollView, FlatList } from "react-native-gesture-handler";
 let db = openDatabase({ name: "newdb", createFromLocation: "~quotes.db" });
 import Snackbar from "react-native-snackbar";
 
-class DailyQuote extends Component {
+class DisplayQuotes extends Component {
   textInputComponents;
   constructor(props) {
     super(props);
@@ -168,4 +168,4 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DailyQuote);
+)(DisplayQuotes);
