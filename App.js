@@ -5,7 +5,8 @@ import { createBottomTabNavigator, createAppContainer } from "react-navigation";
 import DisplayDaily from "./src/containers/display-daily/display-daily";
 import DisplayQuotes from "./src/containers/display-quotes/display-quotes";
 import reducers from "./src/reducers/reducers"
-import { Provider } from 'react-redux'
+import { Provider } from 'react-redux';
+var PushNotification = require('react-native-push-notification');
 
 export const TabNavigator = createBottomTabNavigator({
   Quote: {
