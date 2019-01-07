@@ -5,7 +5,7 @@ import { getFavorites } from "../../actions/index";
 import { TextInput, FlatList } from "react-native-gesture-handler";
 import { removeFavorites } from "../../actions/index";
 import { openDatabase } from "react-native-sqlite-storage";
-let db = openDatabase({ name: "newdb", createFromLocation: "~quotes.db" });
+let db = openDatabase({ name: "db", createFromLocation: "~quotes.db" });
 
 class Favorites extends Component {
   render() {

@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import { addFavorites } from "../../actions/index";
 import { openDatabase } from "react-native-sqlite-storage";
 import { ScrollView, FlatList } from "react-native-gesture-handler";
-let db = openDatabase({ name: "newdb", createFromLocation: "~quotes.db" });
+let db = openDatabase({ name: "db", createFromLocation: "~quotes.db" });
 import Snackbar from "react-native-snackbar";
 
 class DisplayQuotes extends Component {
@@ -143,7 +143,6 @@ function mapDispatchToProps(dispatch, state) {
             "INSERT into favorites values(?,?)",
             [quote.id, quote.quote],
             (tx, results) => {
-              console.log("OK");
             },
             (tx, err) => {
               if (tx.code == 0) {
